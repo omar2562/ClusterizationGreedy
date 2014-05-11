@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class PriorityQueue<T extends Comparable<T>> {
@@ -36,7 +37,7 @@ public class PriorityQueue<T extends Comparable<T>> {
 			if (vector.get(l).compareTo(vector.get(i)) > 0)
 				largest = l;
 			else
-				largest = r;
+				largest = i;
 		if (r < vector.size())
 			if (vector.get(r).compareTo(vector.get(largest)) > 0)
 				largest = r;
@@ -86,7 +87,25 @@ public class PriorityQueue<T extends Comparable<T>> {
 		heapIncreaseKey(vector.size() - 1, key);
 	}
 
+	public boolean isEmpty() {
+		return vector.isEmpty();
+	}
+
+	public boolean hasElement(T p) {
+		Iterator<T> it = vector.iterator();
+		while (it.hasNext()) {
+			if (p.equals(it.next()))
+				return true;
+		}
+		return false;
+	}
+	
+	public void updateQueue(){
+		buildMaxHeap();
+	}
+
 	public static void main(String[] args) {
+
 		PriorityQueue<Integer> heap = new PriorityQueue<Integer>();
 		heap.getVector()
 				.addAll(Arrays.asList(new Integer[] { 4, 1, 3, 2, 16, 9, 10,
@@ -97,13 +116,13 @@ public class PriorityQueue<T extends Comparable<T>> {
 		heap = new PriorityQueue<Integer>();
 		System.out.println("Insert Into Priority Queue");
 		for (Integer i : Arrays.asList(new Integer[] { 4, 1, 3, 2, 16, 9, 10,
-						14, 8, 7 })) {
+				14, 8, 7 })) {
 			heap.maxHeapInsert(i);
 			System.out.println(heap.getVector());
 		}
 		System.out.println("Remove from Priority Queue");
-		while(heap.getVector().size() > 0){
-			System.out.print(heap.heapExtractMax()+": ");
+		while (heap.getVector().size() > 0) {
+			System.out.print(heap.heapExtractMax() + ": ");
 			System.out.println(heap.getVector());
 		}
 	}

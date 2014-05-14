@@ -18,6 +18,7 @@ public class Main {
 	private static Vector<Edge> edgeVector = new Vector<Edge>();
 	private static Vector<Edge> edgeVectorTmp = new Vector<Edge>();
 	private static Iterator<Edge> it;
+	private static IUnionFind<PointVertex> unionFind = new UnionFind<PointVertex>();
 
 	private static IPriorityQueue<PointVertex> priorityQueue = new PriorityQueue<PointVertex>();
 
@@ -37,8 +38,8 @@ public class Main {
 			vertexList.add(point);
 		}
 		generateGraph();
-		// generateMST(numberOfCluster, KRUSKAL);
-		generateMST(numberOfCluster, PRIM);
+		generateMST(numberOfCluster, KRUSKAL);
+		//generateMST(numberOfCluster, PRIM);
 		cutTree(numberOfCluster);
 		for (PointVertex pnt : vertexList) {
 			System.out.println(pnt.getClusterNumber());
@@ -68,7 +69,7 @@ public class Main {
 		pnt.setPi(null);
 		pnt.setClusterNumber(numberOfCluste);
 		for (PointVertex point : vertexListTemp) {
-			if (point.getRoot().getPosition() == pnt.getPosition()) {
+			if (((PointVertex)point.getRoot()).getPosition() == pnt.getPosition()) {
 				point.setClusterNumberToRoot(numberOfCluste);
 			}
 		}
@@ -83,19 +84,20 @@ public class Main {
 
 	private static PointVertex kruskal(int numberOfCluster) {
 		for (PointVertex edge : vertexList) {
-			edge.makeSet();
+			unionFind.makeSet(edge);
 		}
 		Collections.sort(edgeVector);
 		PointVertex p1, p2;
 		for (Edge edge : edgeVector) {
-			p1 = edge.getVertex1().findSet();
-			p2 = edge.getVertex2().findSet();
+			p1 = unionFind.findSet( edge.getVertex1());
+			p2 = unionFind.findSet( edge.getVertex2());
 			if (!p1.equals(p2)) {
 				edgeVectorTmp.add(edge);
-				edge.getVertex1().union(edge.getVertex2());
+				unionFind.union(p1, p2);
+				//edge.getVertex1().union(edge.getVertex2());
 			}
 		}
-		PointVertex root = vertexList.get(0).findSet();
+		PointVertex root = unionFind.findSet(vertexList.get(0));
 		root.setKey(0);
 		root.setPi(null);
 		linkTree(root, new Vector<Edge>(edgeVectorTmp));
@@ -133,7 +135,6 @@ public class Main {
 	private static PointVertex primAlgorith(int numberOfCluster) {
 		for (PointVertex vertex : vertexList) {
 			vertex.setKey(Float.MAX_VALUE);
-			vertex.setChildren(new Vector<PointVertex>());
 			vertexListTemp.add(vertex);
 		}
 		PointVertex pStart = vertexList.get(0);
@@ -147,7 +148,6 @@ public class Main {
 			for (int adj = 0; adj < vertexList.size(); adj++) {
 				PointVertex p = vertexList.get(adj);
 				if (weights[p.getPosition()][point.getPosition()] < p.getKey()) {
-					p.addChild(point);
 					p.setPi(point);
 					p.setKey(weights[p.getPosition()][point.getPosition()]);
 				}

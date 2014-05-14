@@ -1,15 +1,11 @@
-import java.util.Vector;
 
-public class PointVertex implements Comparable<PointVertex>,
-		IUnionFind<PointVertex> {
+public class PointVertex extends AbstractTree implements
+		Comparable<PointVertex> {
 
 	private int clusterNumber = 1;
 	private int position;
 	private double xPosition;
 	private double yPosition;
-	private double key;
-	private Vector<PointVertex> children;
-	private PointVertex pi;
 
 	public PointVertex(double xPosition, double yPosition) {
 		this.xPosition = xPosition;
@@ -38,34 +34,6 @@ public class PointVertex implements Comparable<PointVertex>,
 
 	public void setyPosition(double yPosition) {
 		this.yPosition = yPosition;
-	}
-
-	public double getKey() {
-		return key;
-	}
-
-	public void setKey(double key) {
-		this.key = key;
-	}
-
-	public boolean addChild(PointVertex point) {
-		return children.add(point);
-	}
-
-	public Vector<PointVertex> getChildren() {
-		return children;
-	}
-
-	public void setChildren(Vector<PointVertex> children) {
-		this.children = children;
-	}
-
-	public PointVertex getPi() {
-		return pi;
-	}
-
-	public void setPi(PointVertex pi) {
-		this.pi = pi;
 	}
 
 	public int getPosition() {
@@ -102,59 +70,20 @@ public class PointVertex implements Comparable<PointVertex>,
 		PointVertex pnt = this;
 
 		while (pnt.getPi() != null) {
-			if (pnt.position == pnt.getPi().position)
+			if (pnt.position == ((PointVertex) pnt.getPi()).position)
 				break;
 			System.out.print(pnt + " ==> ");
-			pnt = pnt.getPi();
+			pnt = (PointVertex) pnt.getPi();
 		}
 		System.out.println(pnt);
-	}
-
-	public PointVertex getRoot() {
-		PointVertex last = this;
-		while (last.getPi() != null)
-			last = last.getPi();
-		return last;
 	}
 
 	public void setClusterNumberToRoot(int clusterNumber) {
 		PointVertex last = this;
 		last.setClusterNumber(clusterNumber);
 		while (last.getPi() != null || last.getClusterNumber() != clusterNumber) {
-			last = last.getPi();
+			last = (PointVertex) last.getPi();
 			last.setClusterNumber(clusterNumber);
 		}
-	}
-
-	@Override
-	public void makeSet() {
-		this.pi = this;
-		this.clusterNumber = 0;
-	}
-
-	@Override
-	public PointVertex findSet() {
-		PointVertex x = this;
-		if (!x.equals(x.pi)) {
-			x.pi = x.pi.findSet();
-		}
-		return x.pi;
-	}
-
-	public void link(PointVertex y) {
-		PointVertex x = this;
-		if (x.clusterNumber > y.clusterNumber) {
-			y.pi = x;
-		} else {
-			x.pi = y;
-			if (x.clusterNumber == y.clusterNumber) {
-				y.clusterNumber += 1;
-			}
-		}
-	}
-
-	@Override
-	public void union(PointVertex y) {
-		this.findSet().link(y.findSet());
 	}
 }

@@ -77,8 +77,8 @@ public class PointEdge implements Comparable<PointEdge> {
 
 	@Override
 	public String toString() {
-		return this.position  + " (" + this.xPosition + " " + this.yPosition
-				+ ") :"+this.clusterNumber+" | " + this.key;
+		return this.position + " (" + this.xPosition + " " + this.yPosition
+				+ ") :" + this.clusterNumber + " | " + this.key;
 	}
 
 	@Override
@@ -101,6 +101,8 @@ public class PointEdge implements Comparable<PointEdge> {
 		PointEdge pnt = this;
 
 		while (pnt.getPi() != null) {
+			if (pnt.position == pnt.getPi().position)
+				break;
 			System.out.print(pnt + " ==> ");
 			pnt = pnt.getPi();
 		}
@@ -123,4 +125,32 @@ public class PointEdge implements Comparable<PointEdge> {
 		}
 	}
 
+	public void makeSet() {
+		this.pi = this;
+		this.clusterNumber = 0;
+	}
+
+	public PointEdge findSet() {
+		PointEdge x = this;
+		if (!x.equals(x.pi)) {
+			x.pi = x.pi.findSet();
+		}
+		return x.pi;
+	}
+
+	public void link(PointEdge y) {
+		PointEdge x = this;
+		if (x.clusterNumber > y.clusterNumber) {
+			y.pi = x;
+		} else {
+			x.pi = y;
+			if (x.clusterNumber == y.clusterNumber) {
+				y.clusterNumber += 1;
+			}
+		}
+	}
+
+	public void union(PointEdge y) {
+		this.findSet().link(y.findSet());
+	}
 }

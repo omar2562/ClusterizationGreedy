@@ -19,7 +19,7 @@ public class Main {
 	static Vector<Edge> edgeVectorTmp = new Vector<Edge>();
 	static Iterator<Edge> it;
 
-	static PriorityQueue<PointEdge> priorityQueue = new PriorityQueue<PointEdge>();
+	static IPriorityQueue<PointEdge> priorityQueue = new PriorityQueue<PointEdge>();
 
 	public static void main(String[] args) throws FileNotFoundException {
 		File file = new File("data.txt");
@@ -36,6 +36,7 @@ public class Main {
 		}
 		generateGraph();
 		generateMST(numberOfCluster, KRUSKAL);
+		//generateMST(numberOfCluster, PRIM);
 		/*
 		 * for (Edge edge : edgeVectorTmp) {
 		 * System.out.println(edge.getVertex1() + "-----" + edge.getVertex2() +
@@ -67,7 +68,7 @@ public class Main {
 			}
 		};
 		Collections.sort(edgeListTemp, compareMethod);
-
+		edgeList = edgeListTemp;
 	}
 
 	public static void paintTree(PointEdge pnt, int numberOfCluste) {
@@ -161,7 +162,7 @@ public class Main {
 		}
 		PointEdge pStart = edgeList.get(0);
 		pStart.setKey(0);
-		priorityQueue.setVector(edgeList);
+		((PriorityQueue<PointEdge>) priorityQueue).setVector(edgeList);
 		priorityQueue.updateQueue();
 		/*
 		 * for (PointEdge point : edgeList) {
@@ -170,7 +171,7 @@ public class Main {
 		PointEdge point = null;
 		while (!priorityQueue.isEmpty()) {
 			priorityQueue.updateQueue();
-			point = priorityQueue.heapExtractMax();
+			point = priorityQueue.remove();
 			// System.err.println(point);
 			for (int adj = 0; adj < edgeList.size(); adj++) {
 				PointEdge p = edgeList.get(adj);

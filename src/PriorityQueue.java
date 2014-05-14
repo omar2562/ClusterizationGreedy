@@ -2,7 +2,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class PriorityQueue<T extends Comparable<T>> {
+public class PriorityQueue<T extends Comparable<T>> implements
+		IPriorityQueue<T> {
 	private Vector<T> vector;
 
 	public PriorityQueue() {
@@ -54,11 +55,11 @@ public class PriorityQueue<T extends Comparable<T>> {
 			maxHeapify(i);
 	}
 
-	public T heapMaximum() {
+	protected T heapMaximum() {
 		return vector.get(0);
 	}
 
-	public T heapExtractMax() {
+	protected T heapExtractMax() {
 		if (vector.size() < 0)
 			throw new RuntimeException("heap underflow");
 		T max = vector.get(0);
@@ -82,16 +83,12 @@ public class PriorityQueue<T extends Comparable<T>> {
 		}
 	}
 
-	public void maxHeapInsert(T key) {
+	protected void maxHeapInsert(T key) {
 		vector.add(key);
 		heapIncreaseKey(vector.size() - 1, key);
 	}
 
-	public boolean isEmpty() {
-		return vector.isEmpty();
-	}
-
-	public boolean hasElement(T p) {
+	protected boolean hasElement(T p) {
 		Iterator<T> it = vector.iterator();
 		while (it.hasNext()) {
 			if (p.equals(it.next()))
@@ -100,8 +97,39 @@ public class PriorityQueue<T extends Comparable<T>> {
 		return false;
 	}
 
+	@Override
 	public void updateQueue() {
 		buildMaxHeap();
+	}
+
+	@Override
+	public T remove() {
+		return heapExtractMax();
+	}
+
+	@Override
+	public void insert(T t) {
+		maxHeapInsert(t);
+	}
+
+	@Override
+	public T next() {
+		return heapMaximum();
+	}
+
+	@Override
+	public int size() {
+		return vector.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return vector.isEmpty();
+	}
+
+	@Override
+	public String toString() {
+		return vector + "";
 	}
 
 	public static void main(String[] args) {
@@ -113,17 +141,18 @@ public class PriorityQueue<T extends Comparable<T>> {
 		System.out.println("Build Max Heap");
 		heap.buildMaxHeap();
 		System.out.println(heap.getVector());
-		heap = new PriorityQueue<Integer>();
+
+		IPriorityQueue<Integer> heap2 = new PriorityQueue<Integer>();
 		System.out.println("Insert Into Priority Queue");
 		for (Integer i : Arrays.asList(new Integer[] { 4, 1, 3, 2, 16, 9, 10,
 				14, 8, 7 })) {
-			heap.maxHeapInsert(i);
-			System.out.println(heap.getVector());
+			heap2.insert(i);
+			System.out.println(heap2);
 		}
 		System.out.println("Remove from Priority Queue");
-		while (heap.getVector().size() > 0) {
-			System.out.print(heap.heapExtractMax() + ": ");
-			System.out.println(heap.getVector());
+		while (heap2.size() > 0) {
+			System.out.print(heap2.remove() + ": ");
+			System.out.println(heap2);
 		}
 	}
 }

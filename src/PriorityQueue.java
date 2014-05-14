@@ -99,8 +99,8 @@ public class PriorityQueue<T extends Comparable<T>> {
 		}
 		return false;
 	}
-	
-	public void updateQueue(){
+
+	public void updateQueue() {
 		buildMaxHeap();
 	}
 

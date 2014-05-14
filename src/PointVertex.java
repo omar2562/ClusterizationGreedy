@@ -1,6 +1,7 @@
 import java.util.Vector;
 
-public class PointVertex implements Comparable<PointVertex> {
+public class PointVertex implements Comparable<PointVertex>,
+		IUnionFind<PointVertex> {
 
 	private int clusterNumber = 1;
 	private int position;
@@ -125,11 +126,13 @@ public class PointVertex implements Comparable<PointVertex> {
 		}
 	}
 
+	@Override
 	public void makeSet() {
 		this.pi = this;
 		this.clusterNumber = 0;
 	}
 
+	@Override
 	public PointVertex findSet() {
 		PointVertex x = this;
 		if (!x.equals(x.pi)) {
@@ -150,6 +153,7 @@ public class PointVertex implements Comparable<PointVertex> {
 		}
 	}
 
+	@Override
 	public void union(PointVertex y) {
 		this.findSet().link(y.findSet());
 	}

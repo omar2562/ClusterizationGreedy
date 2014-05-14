@@ -38,8 +38,8 @@ public class Main {
 			vertexList.add(point);
 		}
 		generateGraph();
-		generateMST(numberOfCluster, KRUSKAL);
-		//generateMST(numberOfCluster, PRIM);
+		//generateMST(KRUSKAL);
+		generateMST(PRIM);
 		cutTree(numberOfCluster);
 		for (PointVertex pnt : vertexList) {
 			System.out.println(pnt.getClusterNumber());
@@ -75,14 +75,14 @@ public class Main {
 		}
 	}
 
-	private static PointVertex generateMST(int numberOfCluster, int method) {
+	private static PointVertex generateMST(int method) {
 		if (method == PRIM)
-			return primAlgorith(numberOfCluster);
+			return primAlgorith();
 		else
-			return kruskal(numberOfCluster);
+			return kruskal();
 	}
 
-	private static PointVertex kruskal(int numberOfCluster) {
+	private static PointVertex kruskal() {
 		for (PointVertex edge : vertexList) {
 			unionFind.makeSet(edge);
 		}
@@ -132,7 +132,7 @@ public class Main {
 		it = edgeVectorTmp.iterator();
 	}
 
-	private static PointVertex primAlgorith(int numberOfCluster) {
+	private static PointVertex primAlgorith() {
 		for (PointVertex vertex : vertexList) {
 			vertex.setKey(Float.MAX_VALUE);
 			vertexListTemp.add(vertex);

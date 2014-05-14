@@ -1,16 +1,16 @@
 import java.util.Vector;
 
-public class PointEdge implements Comparable<PointEdge> {
+public class PointVertex implements Comparable<PointVertex> {
 
 	private int clusterNumber = 1;
 	private int position;
 	private double xPosition;
 	private double yPosition;
 	private double key;
-	private Vector<PointEdge> children;
-	private PointEdge pi;
+	private Vector<PointVertex> children;
+	private PointVertex pi;
 
-	public PointEdge(double xPosition, double yPosition) {
+	public PointVertex(double xPosition, double yPosition) {
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 	}
@@ -47,23 +47,23 @@ public class PointEdge implements Comparable<PointEdge> {
 		this.key = key;
 	}
 
-	public boolean addChild(PointEdge point) {
+	public boolean addChild(PointVertex point) {
 		return children.add(point);
 	}
 
-	public Vector<PointEdge> getChildren() {
+	public Vector<PointVertex> getChildren() {
 		return children;
 	}
 
-	public void setChildren(Vector<PointEdge> children) {
+	public void setChildren(Vector<PointVertex> children) {
 		this.children = children;
 	}
 
-	public PointEdge getPi() {
+	public PointVertex getPi() {
 		return pi;
 	}
 
-	public void setPi(PointEdge pi) {
+	public void setPi(PointVertex pi) {
 		this.pi = pi;
 	}
 
@@ -82,7 +82,7 @@ public class PointEdge implements Comparable<PointEdge> {
 	}
 
 	@Override
-	public int compareTo(PointEdge point) {
+	public int compareTo(PointVertex point) {
 		// System.err.println(this + "- " + point + ":"+double.compare(this.key,
 		// point.key));
 		return 0 - Double.compare(this.key, point.key);
@@ -90,15 +90,15 @@ public class PointEdge implements Comparable<PointEdge> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof PointEdge) {
-			PointEdge p = (PointEdge) obj;
+		if (obj instanceof PointVertex) {
+			PointVertex p = (PointVertex) obj;
 			return p.position == this.position;
 		}
 		return false;
 	}
 
 	public void print() {
-		PointEdge pnt = this;
+		PointVertex pnt = this;
 
 		while (pnt.getPi() != null) {
 			if (pnt.position == pnt.getPi().position)
@@ -109,15 +109,15 @@ public class PointEdge implements Comparable<PointEdge> {
 		System.out.println(pnt);
 	}
 
-	public PointEdge getRoot() {
-		PointEdge last = this;
+	public PointVertex getRoot() {
+		PointVertex last = this;
 		while (last.getPi() != null)
 			last = last.getPi();
 		return last;
 	}
 
 	public void setClusterNumberToRoot(int clusterNumber) {
-		PointEdge last = this;
+		PointVertex last = this;
 		last.setClusterNumber(clusterNumber);
 		while (last.getPi() != null || last.getClusterNumber() != clusterNumber) {
 			last = last.getPi();
@@ -130,16 +130,16 @@ public class PointEdge implements Comparable<PointEdge> {
 		this.clusterNumber = 0;
 	}
 
-	public PointEdge findSet() {
-		PointEdge x = this;
+	public PointVertex findSet() {
+		PointVertex x = this;
 		if (!x.equals(x.pi)) {
 			x.pi = x.pi.findSet();
 		}
 		return x.pi;
 	}
 
-	public void link(PointEdge y) {
-		PointEdge x = this;
+	public void link(PointVertex y) {
+		PointVertex x = this;
 		if (x.clusterNumber > y.clusterNumber) {
 			y.pi = x;
 		} else {
@@ -150,7 +150,7 @@ public class PointEdge implements Comparable<PointEdge> {
 		}
 	}
 
-	public void union(PointEdge y) {
+	public void union(PointVertex y) {
 		this.findSet().link(y.findSet());
 	}
 }

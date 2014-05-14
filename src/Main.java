@@ -12,31 +12,31 @@ public class Main {
 	private static final int PRIM = 1;
 	private static final int KRUSKAL = 2;
 	private static final int MAX_SIZE = 1000;
-	static Vector<PointEdge> edgeList = new Vector<PointEdge>();
-	static Vector<PointEdge> edgeListTemp = new Vector<PointEdge>();
+	static Vector<PointVertex> vertexList = new Vector<PointVertex>();
+	static Vector<PointVertex> vertexListTemp = new Vector<PointVertex>();
 	static double[][] weights = new double[MAX_SIZE][MAX_SIZE];
 	static Vector<Edge> edgeVector = new Vector<Edge>();
 	static Vector<Edge> edgeVectorTmp = new Vector<Edge>();
 	static Iterator<Edge> it;
 
-	static IPriorityQueue<PointEdge> priorityQueue = new PriorityQueue<PointEdge>();
+	static IPriorityQueue<PointVertex> priorityQueue = new PriorityQueue<PointVertex>();
 
 	public static void main(String[] args) throws FileNotFoundException {
 		File file = new File("data.txt");
 		int numberOfCluster = 7;
 		Scanner sc = new Scanner(file).useLocale(Locale.US);
-		PointEdge point;
+		PointVertex point;
 		int position = 0;
 		while (sc.hasNext()) {
 			double x = sc.nextDouble();
 			double y = sc.nextDouble();
-			point = new PointEdge(x, y);
+			point = new PointVertex(x, y);
 			point.setPosition(position++);
-			edgeList.add(point);
+			vertexList.add(point);
 		}
 		generateGraph();
 		generateMST(numberOfCluster, KRUSKAL);
-		//generateMST(numberOfCluster, PRIM);
+		// generateMST(numberOfCluster, PRIM);
 		/*
 		 * for (Edge edge : edgeVectorTmp) {
 		 * System.out.println(edge.getVertex1() + "-----" + edge.getVertex2() +
@@ -46,7 +46,7 @@ public class Main {
 		 * System.out.println("_________");
 		 */
 		cutTree(numberOfCluster);
-		for (PointEdge pnt : edgeList) {
+		for (PointVertex pnt : vertexList) {
 			System.out.println(pnt.getClusterNumber());
 			// pnt.print();
 			// System.out.println("===================>"+pnt.getClusterNumber());
@@ -54,47 +54,47 @@ public class Main {
 	}
 
 	private static void cutTree(int numberOfCluster) {
-		Collections.sort(edgeListTemp);
-		PointEdge pnt;
+		Collections.sort(vertexListTemp);
+		PointVertex pnt;
 		for (int i = 1; i < numberOfCluster; i++) {
-			pnt = edgeListTemp.get(i - 1);
+			pnt = vertexListTemp.get(i - 1);
 			paintTree(pnt, i + 1);
 		}
-		Comparator<PointEdge> compareMethod = new Comparator<PointEdge>() {
+		Comparator<PointVertex> compareMethod = new Comparator<PointVertex>() {
 
 			@Override
-			public int compare(PointEdge o1, PointEdge o2) {
+			public int compare(PointVertex o1, PointVertex o2) {
 				return Integer.compare(o1.getPosition(), o2.getPosition());
 			}
 		};
-		Collections.sort(edgeListTemp, compareMethod);
-		edgeList = edgeListTemp;
+		Collections.sort(vertexListTemp, compareMethod);
+		vertexList = vertexListTemp;
 	}
 
-	public static void paintTree(PointEdge pnt, int numberOfCluste) {
+	public static void paintTree(PointVertex pnt, int numberOfCluste) {
 		// System.err.println(pnt);
 		pnt.setPi(null);
 		pnt.setClusterNumber(numberOfCluste);
-		for (PointEdge point : edgeListTemp) {
+		for (PointVertex point : vertexListTemp) {
 			if (point.getRoot().getPosition() == pnt.getPosition()) {
 				point.setClusterNumberToRoot(numberOfCluste);
 			}
 		}
 	}
 
-	private static PointEdge generateMST(int numberOfCluster, int method) {
+	private static PointVertex generateMST(int numberOfCluster, int method) {
 		if (method == PRIM)
 			return primAlgorith(numberOfCluster);
 		else
 			return kruskal(numberOfCluster);
 	}
 
-	private static PointEdge kruskal(int numberOfCluster) {
-		for (PointEdge edge : edgeList) {
+	private static PointVertex kruskal(int numberOfCluster) {
+		for (PointVertex edge : vertexList) {
 			edge.makeSet();
 		}
 		Collections.sort(edgeVector);
-		PointEdge p1, p2;
+		PointVertex p1, p2;
 		for (Edge edge : edgeVector) {
 			p1 = edge.getVertex1().findSet();
 			p2 = edge.getVertex2().findSet();
@@ -103,17 +103,17 @@ public class Main {
 				edge.getVertex1().union(edge.getVertex2());
 			}
 		}
-		PointEdge root = edgeList.get(0).findSet();
+		PointVertex root = vertexList.get(0).findSet();
 		root.setKey(0);
 		root.setPi(null);
 		linkTree(root, new Vector<Edge>(edgeVectorTmp));
-		edgeListTemp = edgeList;
+		vertexListTemp = vertexList;
 		return root;
 	}
 
-	private static void linkTree(PointEdge father, Vector<Edge> vector) {
+	private static void linkTree(PointVertex father, Vector<Edge> vector) {
 		father.setClusterNumber(0);
-		PointEdge p1, p2, pt;
+		PointVertex p1, p2, pt;
 		it = edgeVectorTmp.iterator();
 		// while(!vector.isEmpty()){
 		while (it.hasNext()) {
@@ -154,27 +154,27 @@ public class Main {
 		 */
 	}
 
-	private static PointEdge primAlgorith(int numberOfCluster) {
-		for (PointEdge edge : edgeList) {
-			edge.setKey(Float.MAX_VALUE);
-			edge.setChildren(new Vector<PointEdge>());
-			edgeListTemp.add(edge);
+	private static PointVertex primAlgorith(int numberOfCluster) {
+		for (PointVertex vertex : vertexList) {
+			vertex.setKey(Float.MAX_VALUE);
+			vertex.setChildren(new Vector<PointVertex>());
+			vertexListTemp.add(vertex);
 		}
-		PointEdge pStart = edgeList.get(0);
+		PointVertex pStart = vertexList.get(0);
 		pStart.setKey(0);
-		((PriorityQueue<PointEdge>) priorityQueue).setVector(edgeList);
+		((PriorityQueue<PointVertex>) priorityQueue).setVector(vertexList);
 		priorityQueue.updateQueue();
 		/*
 		 * for (PointEdge point : edgeList) {
 		 * priorityQueue.maxHeapInsert(point); }
 		 */
-		PointEdge point = null;
+		PointVertex point = null;
 		while (!priorityQueue.isEmpty()) {
 			priorityQueue.updateQueue();
 			point = priorityQueue.remove();
 			// System.err.println(point);
-			for (int adj = 0; adj < edgeList.size(); adj++) {
-				PointEdge p = edgeList.get(adj);
+			for (int adj = 0; adj < vertexList.size(); adj++) {
+				PointVertex p = vertexList.get(adj);
 				if (weights[p.getPosition()][point.getPosition()] < p.getKey()) {
 					p.addChild(point);
 					p.setPi(point);
@@ -189,11 +189,11 @@ public class Main {
 
 	private static void generateGraph() {
 
-		PointEdge p1, p2;
-		for (int i = 0; i < edgeList.size() - 1; i++) {
-			for (int j = i + 1; j < edgeList.size(); j++) {
-				p1 = edgeList.get(i);
-				p2 = edgeList.get(j);
+		PointVertex p1, p2;
+		for (int i = 0; i < vertexList.size() - 1; i++) {
+			for (int j = i + 1; j < vertexList.size(); j++) {
+				p1 = vertexList.get(i);
+				p2 = vertexList.get(j);
 				weights[i][j] = Math.sqrt(Math.pow(
 						p1.getxPosition() - p2.getxPosition(), 2)
 						+ Math.pow(p1.getyPosition() - p2.getyPosition(), 2));

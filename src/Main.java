@@ -20,13 +20,13 @@ public class Main {
 	private static Iterator<Edge> it;
 	private static IUnionFind<PointVertex> unionFind = new UnionFind<PointVertex>();
 
-	private static IPriorityQueue<PointVertex> priorityQueue = new PriorityQueue<PointVertex>();
+	private static IPriorityQueue<PointVertex> priorityQueue = new HeapPriorityQueue<PointVertex>();
 
 	public static void main(String[] args) throws FileNotFoundException {
-		File file = new File("data.txt");
+		//File file = new File("data.txt");
 		int numberOfCluster = 7;
-		Scanner scanner = new Scanner(file);
-		// Scanner scanner = new Scanner(System.in);
+		//Scanner scanner = new Scanner(file);
+		Scanner scanner = new Scanner(System.in);
 		scanner.useLocale(Locale.US);
 		PointVertex point;
 		int position = 0;
@@ -38,8 +38,8 @@ public class Main {
 			vertexList.add(point);
 		}
 		generateGraph();
-		//generateMST(KRUSKAL);
-		generateMST(PRIM);
+		generateMST(KRUSKAL);
+		//generateMST(PRIM);
 		cutTree(numberOfCluster);
 		for (PointVertex pnt : vertexList) {
 			System.out.println(pnt.getClusterNumber());
@@ -83,8 +83,8 @@ public class Main {
 	}
 
 	private static PointVertex kruskal() {
-		for (PointVertex edge : vertexList) {
-			unionFind.makeSet(edge);
+		for (PointVertex vertex : vertexList) {
+			unionFind.makeSet(vertex);
 		}
 		Collections.sort(edgeVector);
 		PointVertex p1, p2;
@@ -139,7 +139,7 @@ public class Main {
 		}
 		PointVertex pStart = vertexList.get(0);
 		pStart.setKey(0);
-		((PriorityQueue<PointVertex>) priorityQueue).setVector(vertexList);
+		((HeapPriorityQueue<PointVertex>) priorityQueue).setVector(vertexList);
 		priorityQueue.updateQueue();
 		PointVertex point = null;
 		while (!priorityQueue.isEmpty()) {

@@ -2,11 +2,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class PriorityQueue<T extends Comparable<T>> implements
+public class HeapPriorityQueue<T extends Comparable<T>> implements
 		IPriorityQueue<T> {
 	private Vector<T> vector;
 
-	public PriorityQueue() {
+	public HeapPriorityQueue() {
 		vector = new Vector<T>();
 	}
 
@@ -134,7 +134,7 @@ public class PriorityQueue<T extends Comparable<T>> implements
 
 	public static void main(String[] args) {
 
-		PriorityQueue<Integer> heap = new PriorityQueue<Integer>();
+		HeapPriorityQueue<Integer> heap = new HeapPriorityQueue<Integer>();
 		heap.getVector()
 				.addAll(Arrays.asList(new Integer[] { 4, 1, 3, 2, 16, 9, 10,
 						14, 8, 7 }));
@@ -142,7 +142,7 @@ public class PriorityQueue<T extends Comparable<T>> implements
 		heap.buildMaxHeap();
 		System.out.println(heap.getVector());
 
-		IPriorityQueue<Integer> heap2 = new PriorityQueue<Integer>();
+		IPriorityQueue<Integer> heap2 = new HeapPriorityQueue<Integer>();
 		System.out.println("Insert Into Priority Queue");
 		for (Integer i : Arrays.asList(new Integer[] { 4, 1, 3, 2, 16, 9, 10,
 				14, 8, 7 })) {
